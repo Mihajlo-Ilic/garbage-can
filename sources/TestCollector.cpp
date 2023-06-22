@@ -1,3 +1,5 @@
 #include "../includes/TestCollector.hpp"
 
-using namespace bfly;
+using namespace gcan;
+
+std::map<std::string,TestMeta*> TestCollector::_testRegistry{};
