@@ -2,9 +2,11 @@
 ### Welcome to the trashlands!  
 Garbage can is my hobby project to learn preprocessor  
 meta programming in C++.  
->>>> It's garbage can not garbage cannot!
+> It's garbage can not garbage cannot!
 
 Current features:
+
+![initial work](showcase_images/first_example.png)
 
 * Test syntax parsing
 
