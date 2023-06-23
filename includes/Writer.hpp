@@ -33,6 +33,15 @@ namespace gcan
 
         }
 
+        static void logTest(const std::string& testName, bool passed)
+        {
+            static std::vector<std::string> _logs;
+
+            _logs.push_back(testName + (!passed ? " FAILED" : " PASSED"));
+            std::cout << _logs.at(_logs.size() - 1) << std::endl;
+
+        }
+
     };
 
 }

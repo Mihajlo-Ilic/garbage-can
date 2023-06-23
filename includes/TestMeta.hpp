@@ -30,14 +30,15 @@ namespace gcan
 		{
 		};
 
+        std::string getName() const {return _name;}
+        bool getResult() const {return result;}
+
     protected:
         bool result = true;
 
 	private:
 
 		std::string _name;
-
-		std::shared_ptr<std::function<void()>> _test;
 	};
 }
 

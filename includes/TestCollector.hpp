@@ -4,6 +4,7 @@
 #include <map>
 
 #include "garbagecan.hpp"
+#include "Writer.hpp"
 
 namespace gcan
 {
@@ -32,6 +33,7 @@ namespace gcan
             for (const auto& test: TestCollector::testRegistry())
             {
                 test->testBody();
+                gcan::Outputer::logTest(test->getName(), test->getResult());
             }
 		}
 
