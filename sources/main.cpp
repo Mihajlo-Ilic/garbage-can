@@ -3,7 +3,10 @@
 #include <iostream>
 
 Test(My_Test){
-	std::cout << "Hello from me " << std::endl;
+    EXPECT_EQ(2,3);
+
+    EXPECT_LTE(5,3);
+    EXPECT_GT(5,3);
 }
 
 int main()

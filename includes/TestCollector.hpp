@@ -3,7 +3,7 @@
 
 #include <map>
 
-#include "TestSuiteMeta.hpp"
+#include "garbagecan.hpp"
 
 namespace gcan
 {

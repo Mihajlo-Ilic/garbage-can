@@ -1,4 +1,4 @@
-#include "../includes/TestSuiteMeta.hpp"
+#include "../includes/garbagecan.hpp"
 
 #include <iostream>
 

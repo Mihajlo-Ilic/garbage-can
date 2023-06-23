@@ -30,6 +30,9 @@ namespace gcan
 		{
 		};
 
+    protected:
+        bool result = true;
+
 	private:
 
 		std::string _name;
