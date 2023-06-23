@@ -6,7 +6,7 @@ meta programming in C++.
 
 Current features:
 
-![initial work](showcase_images/first_example.png)
+![initial work logging](showcase_images/first_example.png)
 
 * Test syntax parsing
 
