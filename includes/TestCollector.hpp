@@ -15,22 +15,26 @@ namespace gcan
 
 		using MetaNew = std::unique_ptr<TestMeta>;
 
+        static std::vector<TestMeta*>& testRegistry()
+        {
+            static std::vector<TestMeta*> _registry;
+            return _registry;
+        }
+
 		static bool registerTest(TestMeta *test)
 		{
-			TestCollector::_testRegistry["a"] = test;
+            TestCollector::testRegistry().push_back(test);
 			return true;
 		}
 
 		static void run()
 		{
-			for (const auto& it: TestCollector::_testRegistry)
-			{
-				it.second->testBody();
-			}
+            for (const auto& test: TestCollector::testRegistry())
+            {
+                test->testBody();
+            }
 		}
 
-	private:
-		static std::map<std::string, TestMeta*> _testRegistry;
 	};
 
 }
