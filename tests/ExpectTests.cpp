@@ -170,9 +170,9 @@ Test(Expect_String_Not_Equal)
     std::string b = "abd";
     std::string c = "abf";
 
-    EXPECT_STRING_NE(a.c_str(), a.c_str());
+    EXPECT_STRING_NE(a.c_str(), "aaas");
 
-    EXPECT_STRING_NE("abc", b.c_str());
+    EXPECT_STRING_NE("aba", b.c_str());
     EXPECT_STRING_NE(b.c_str(), c.c_str());
 
     EXPECT_STRING_NE(a.c_str(), c.c_str());
