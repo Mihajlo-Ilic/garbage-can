@@ -1,21 +1,23 @@
-#ifndef TESTSUITEIMPL_HPP
-#define TESTSUITEIMPL_HPP
+#ifndef GARBAGE_CAN_UNIT_TESTER_HPP
+#define GARBAGE_CAN_UNIT_TESTER_HPP
 
 #include <vector>
-#include <cstring>
-#include <cmath>
+#include <string>
+#include <iostream>
+
 #include <exception>
 
-#include "TestMeta.hpp"
-#include "TestCollector.hpp"
-#include "Writer.hpp"
+#include <cstring>
+#include <cmath>
 
-namespace gcan
-{
+#define GARBAGE_TESTER_MAIN \
+int main() \
+{ \
+    gcan::TestCollector::run(); \
+    return 0; \
+}
 
-	namespace _gcanPrivate
-	{
-
+namespace gcan {
 
 #define TEST_NAME_FROM_STR(Name) __TEST_INTERNAL__ ## Name
 
@@ -24,19 +26,18 @@ namespace gcan
     {                              \
         public:                       \
                  TEST_NAME_FROM_STR(Name) (): TestMeta( #Name ) { \
-				 } \
+                 } \
                  \
             virtual void testBody() override;              \
-			static bool _registered; \
-		\
-	};                     \
-	bool TEST_NAME_FROM_STR(Name)::_registered = gcan::TestCollector::registerTest(new TEST_NAME_FROM_STR(Name));	\
+            static bool _registered; \
+        \
+    };                     \
+    bool TEST_NAME_FROM_STR(Name)::_registered = gcan::TestCollector::registerTest(new TEST_NAME_FROM_STR(Name));    \
     void TEST_NAME_FROM_STR(Name)  ::testBody()
 
-
-	}
-
 #define Test(Name) Test_Private(Name)
+
+//-------------------------EXPECT CALLS -------------------------------
 
 #define EXPECT_EQ(op1, op2) result &= (op1) == (op2); gcan::Outputer::logOperator(__FILE__,__LINE__,#op1,#op2,"=",!((op1) == (op2)))
 #define EXPECT_NE(op1, op2) result &= (op1) != (op2); gcan::Outputer::logOperator(__FILE__,__LINE__,#op1,#op2,"!=",!((op1) != (op2)))
@@ -57,6 +58,8 @@ namespace gcan
 #define EXPECT_THROW_EXCEPTION(except, statement) result =false; try statement catch(const std::exception& e) {result = (typeid(e) == typeid(except));}
 #define EXPECT_THROWS(statement) result =false; try statement catch(...) {result = true;}
 #define EXPECT_NO_THROW(statement) try statement catch(...) {result = false;}
+
+//-------------------------ASSERT CALLS -------------------------------
 
 #define CONDITIONAL_ASSERT_END if (!result) {return;}
 
@@ -79,6 +82,91 @@ namespace gcan
 #define ASSERT_THROW_EXCEPTION(except, statement) result =false; try statement catch(const std::exception& e) {result = (typeid(e) == typeid(except));} CONDITIONAL_ASSERT_END
 #define ASSERT_THROWS(statement) result =false; try statement catch(...) {result = true;} CONDITIONAL_ASSERT_END
 #define ASSERT_NO_THROW(statement) try statement catch(...) {result = false;} CONDITIONAL_ASSERT_END
+
+
+//-------------------------CLASSES-------------------------------
+
+
+    class Outputer {
+    public:
+
+        static void logOperator(const std::string &file, int line, const std::string &op1, const std::string &op2,
+                                const std::string &operation, bool failed) {
+            static std::vector<std::string> _logs;
+
+            if (failed) {
+                _logs.push_back("File: " + file + ":" + std::to_string(line) + " " + op1 + " " + operation + " " + op2 +
+                                " FAILED");
+                std::cout << _logs.at(_logs.size() - 1) << std::endl;
+            }
+
+        }
+
+        static void logTest(const std::string &testName, bool passed) {
+            static std::vector<std::string> _logs;
+
+            _logs.push_back("-- " + testName + (!passed ? " FAILED" : " PASSED"));
+            std::cout << _logs.at(_logs.size() - 1) << std::endl;
+
+        }
+
+    };
+
+    class TestMeta {
+    public:
+        explicit TestMeta(const std::string &name) : _name(name) {};
+
+        TestMeta(const TestMeta &) = delete;
+
+        TestMeta &
+        operator=(const TestMeta &) = delete;
+
+        virtual void
+        prepareTest() {
+        };
+
+        virtual void
+        cleanupTest() {
+        };
+
+        virtual void
+        testBody() {
+        };
+
+        std::string getName() const { return _name; }
+
+        bool getResult() const { return result; }
+
+    protected:
+        bool result = true;
+
+    private:
+
+        std::string _name;
+    };
+
+    class TestCollector {
+    public:
+        TestCollector() = delete;
+
+        static std::vector<TestMeta *> &testRegistry() {
+            static std::vector<TestMeta *> _registry;
+            return _registry;
+        }
+
+        static bool registerTest(TestMeta *test) {
+            TestCollector::testRegistry().push_back(test);
+            return true;
+        }
+
+        static void run() {
+            for (const auto &test: TestCollector::testRegistry()) {
+                test->testBody();
+                Outputer::logTest(test->getName(), test->getResult());
+            }
+        }
+
+    };
 
 }
 #endif

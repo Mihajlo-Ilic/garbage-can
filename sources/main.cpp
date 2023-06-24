@@ -1,7 +1,2 @@
-#include "../includes/TestCollector.hpp"
-
-int main()
-{
-	gcan::TestCollector::run();
-	return 0;
-}
+#include "../includes/garbagecan.hpp"
+GARBAGE_TESTER_MAIN
