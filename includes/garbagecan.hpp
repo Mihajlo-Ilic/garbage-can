@@ -2,7 +2,9 @@
 #define TESTSUITEIMPL_HPP
 
 #include <vector>
-#include "string.h"
+#include <cstring>
+#include <cmath>
+#include <exception>
 
 #include "TestMeta.hpp"
 #include "TestCollector.hpp"
@@ -38,7 +40,7 @@ namespace gcan
 
 #define EXPECT_EQ(op1, op2) result &= (op1) == (op2); gcan::Outputer::logOperator(__FILE__,__LINE__,#op1,#op2,"=",!((op1) == (op2)))
 #define EXPECT_NE(op1, op2) result &= (op1) != (op2); gcan::Outputer::logOperator(__FILE__,__LINE__,#op1,#op2,"!=",!((op1) != (op2)))
-#define EXPECT_GT(op1, op2) result &= (op1) > (op2) ; gcan::Outputer::logOperator(__FILE__,__LINE__,#op1,#op2,">",!((op1) > (op2)))
+#define EXPECT_GT(op1, op2) result &= (op1) > (op2); gcan::Outputer::logOperator(__FILE__,__LINE__,#op1,#op2,">",!((op1) > (op2)))
 #define EXPECT_LT(op1, op2) result &= (op1) < (op2); gcan::Outputer::logOperator(__FILE__,__LINE__,#op1,#op2,"<",!((op1) < (op2)))
 #define EXPECT_GTE(op1, op2) result &= (op1) >= (op2); gcan::Outputer::logOperator(__FILE__,__LINE__,#op1,#op2,"<=",!((op1) >= (op2)))
 #define EXPECT_LTE(op1, op2) result &= (op1) <= (op2); gcan::Outputer::logOperator(__FILE__,__LINE__,#op1,#op2,"<=",!((op1) <= (op2)))
@@ -49,17 +51,34 @@ namespace gcan
 #define EXPECT_STRING_EQ(str1, str2) result &= (strcmp(str1, str2) == 0)
 #define EXPECT_STRING_NE(str1, str2) result &= (strcmp(str1, str2) != 0)
 
-#define CONDITIONAL_ASSERT_END(result) if (!result) {return;}
+#define EXPECT_FLOAT_EPS(float1, float2, eps) result &= (fabs((a)-(b)) <= eps)
+#define EXPECT_FLOAT_NEPS(float1, float2, eps) result &= (fabs((a)-(b)) >= eps); gcan::Outputer::logOperator(__FILE__,__LINE__, std::to_string(fabs((a)-(b))),std::to_string(eps),">=",(fabs((a)-(b)) >= eps))
 
-#define ASSERT_EQ(op1, op2) result &&= (op1) == (op2); CONDITIONAL_ASSERT_END(result)
-#define ASSERT_NE(op1, op2) result &&= (op1) != (op2) CONDITIONAL_ASSERT_END(result)
-#define ASSERT_GT(op1, op2) result &&= (op1) > (op2) CONDITIONAL_ASSERT_END(result)
-#define ASSERT_LT(op1, op2) result &&= (op1) < (op2) CONDITIONAL_ASSERT_END(result)
-#define ASSERT_GTE(op1, op2) result &&= (op1) >= (op2) CONDITIONAL_ASSERT_END(result)
-#define ASSERT_LTE(op1, op2) result &&= (op1) <= (op2) CONDITIONAL_ASSERT_END(result)
+#define EXPECT_THROW_EXCEPTION(except, statement) result =false; try statement catch(const std::exception& e) {result = (typeid(e) == typeid(except));}
+#define EXPECT_THROWS(statement) result =false; try statement catch(...) {result = true;}
+#define EXPECT_NO_THROW(statement) try statement catch(...) {result = false;}
 
-#define ASSERT_TRUE(op) ASSERT_EQ(op, true)
-#define ASSERT_FALSE(op) ASSERT_EQ(op, false)
+#define CONDITIONAL_ASSERT_END if (!result) {return;}
+
+#define ASSERT_EQ(op1, op2) result &= (op1) == (op2); CONDITIONAL_ASSERT_END
+#define ASSERT_NE(op1, op2) result &= (op1) != (op2);CONDITIONAL_ASSERT_END
+#define ASSERT_GT(op1, op2) result &= (op1) > (op2);CONDITIONAL_ASSERT_END
+#define ASSERT_LT(op1, op2) result &= (op1) < (op2);CONDITIONAL_ASSERT_END
+#define ASSERT_GTE(op1, op2) result &= (op1) >= (op2);CONDITIONAL_ASSERT_END
+#define ASSERT_LTE(op1, op2) result &= (op1) <= (op2);CONDITIONAL_ASSERT_END
+
+#define ASSERT_TRUE(op) ASSERT_EQ(op, true) CONDITIONAL_ASSERT_END
+#define ASSERT_FALSE(op) ASSERT_EQ(op, false) CONDITIONAL_ASSERT_END
+
+#define ASSERT_STRING_EQ(str1, str2) result &= (strcmp(str1, str2) == 0); CONDITIONAL_ASSERT_END
+#define ASSERT_STRING_NE(str1, str2) result &= (strcmp(str1, str2) != 0); CONDITIONAL_ASSERT_END
+
+#define ASSERT_FLOAT_EPS(float1, float2, eps) result &= (fabs((a)-(b)) <= eps); CONDITIONAL_ASSERT_END
+#define ASSERT_FLOAT_NEPS(float1, float2, eps) result &= (fabs((a)-(b)) >= eps); CONDITIONAL_ASSERT_END
+
+#define ASSERT_THROW_EXCEPTION(except, statement) result =false; try statement catch(const std::exception& e) {result = (typeid(e) == typeid(except));} CONDITIONAL_ASSERT_END
+#define ASSERT_THROWS(statement) result =false; try statement catch(...) {result = true;} CONDITIONAL_ASSERT_END
+#define ASSERT_NO_THROW(statement) try statement catch(...) {result = false;} CONDITIONAL_ASSERT_END
 
 }
 #endif

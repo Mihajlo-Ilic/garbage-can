@@ -6,14 +6,12 @@ meta programming in C++.
 
 Current features:
 
-![initial work logging](showcase_images/first_example.png)
-
 * Test syntax parsing
+* Expect calls (comparing two arbitrary values)
+* Assert calls (same as expect but exiting if it fails)
 
 Need to be implemented:
 
-* Expect calls (comparing two arbitrary values)
-* Assert calls (same as expect but exiting if it fails)
 * Grouping tests
   * Test Suite (Grouped tests that share a given resources)
   * Test Group (Grouped tests that have copies of given resources)

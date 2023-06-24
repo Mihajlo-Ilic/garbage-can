@@ -177,3 +177,79 @@ Test(Expect_String_Not_Equal)
 
     EXPECT_STRING_NE(a.c_str(), c.c_str());
 }
+
+Test(Expect_Float_Eps)
+{
+    double a = 5.5;
+    double b = 5.5;
+
+    for (unsigned i = 0; i < 100; i++)
+    {
+        EXPECT_FLOAT_EPS(a, b + pow(10, -i), i);
+    }
+}
+
+Test(Expect_Float_Neps)
+{
+    double a = 5.5;
+    double b = 5.55;
+
+    for (unsigned i = 0; i < 100; i++)
+    {
+        EXPECT_FLOAT_NEPS(a, b + pow(10, -i), i);
+    }
+}
+
+struct MyException : public std::exception
+{
+
+};
+
+void throw_function()
+{
+    throw MyException{};
+}
+
+Test(Expect_Throw_Anything)
+{
+    EXPECT_THROWS({
+        throw(std::runtime_error(""));
+    });
+
+    EXPECT_THROWS({
+       throw(std::overflow_error(""));
+    });
+
+    EXPECT_THROWS({
+       throw(5);
+    });
+
+    EXPECT_THROWS({
+      throw_function();
+    });
+}
+
+Test(Expect_Throw_Exception)
+{
+    EXPECT_THROW_EXCEPTION(
+        std::overflow_error,
+        {
+            throw(std::overflow_error(""));
+        }
+    );
+
+    EXPECT_THROW_EXCEPTION(
+        MyException,
+        {
+            throw_function();
+        }
+    );
+}
+
+Test(Expect_No_Throwing)
+{
+    EXPECT_NO_THROW({
+        int a = 6;
+        int b = 7;
+   });
+}
