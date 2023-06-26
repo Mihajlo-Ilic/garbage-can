@@ -39,7 +39,7 @@ namespace gcan {
 
 #define FILE __FILE__,__LINE__
 
-#define EXPECT_EQ(op1, op2)  {if (!compare2(op1, op2, equality))     addLog(this, log2(FILE, "EXPECT_EQ",  #op1, #op2, op1, op2));}
+#define EXPECT_EQ(op1, op2)  {if (compare2(op1, op2, equality))     addLog(this, log2(FILE, "EXPECT_EQ",  #op1, #op2, op1, op2));}
 #define EXPECT_NE(op1, op2)  {if (!compare2(op1, op2, notEqual))     addLog(this, log2(FILE, "EXPECT_NE",  #op1, #op2, op1, op2));}
 #define EXPECT_GT(op1, op2)  {if (!compare2(op1, op2, greater))      addLog(this, log2(FILE, "EXPECT_GT",  #op1, #op2, op1, op2));}
 #define EXPECT_LT(op1, op2)  {if (!compare2(op1, op2, lesser))       addLog(this, log2(FILE, "EXPECT_LT",  #op1, #op2, op1, op2));}

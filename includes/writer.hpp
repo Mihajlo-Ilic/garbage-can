@@ -7,7 +7,7 @@
 #include <string>
 #include <iostream>
 #include <iomanip>
-
+#include <cxxabi.h>
 
 using str = const std::string&;
 
@@ -41,11 +41,17 @@ toStr(T arg)
 
     if (std::is_null_pointer<T>())
     {
-        result << "Null ptr";
+        result << "Null Pointer";
     }
     else
     {
-        result << "Type cannot be converted to string";
+        int status;
+        char *name;
+        const std::type_info &info = typeid(arg);
+
+        name = abi::__cxa_demangle(info.name(), NULL, NULL, &status);
+        result << name;
+        free(name);
     }
     return result.str();
 }
