@@ -50,7 +50,7 @@ toStr(T arg)
         const std::type_info &info = typeid(arg);
 
         name = abi::__cxa_demangle(info.name(), NULL, NULL, &status);
-        result << name;
+        result << "not printable Type:" << name;
         free(name);
     }
     return result.str();
@@ -88,6 +88,18 @@ std::stringstream log1(str file,int line, str operation, str op1, T value)
 
     result << "-- " << file << ":" << line << " " << operation << "(" << op1 << ") FAILED" << std::endl;
     result << "\tvalue of arg: " << toStr(value) << std::endl;
+
+    return result;
+}
+
+template<typename T>
+std::stringstream logTryCatch(str file,int line,str operation, str statement, T message)
+{
+    std::stringstream result;
+
+    result << "-- " << file << ":" << line << " " << operation << "(" << statement << ") FAILED" << std::endl;
+    result << "\tResult of try catch: " << std::endl;
+    result << "\t\tException message: " << message << std::endl;
 
     return result;
 }

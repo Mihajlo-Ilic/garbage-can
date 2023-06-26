@@ -39,7 +39,7 @@ namespace gcan {
 
 #define FILE __FILE__,__LINE__
 
-#define EXPECT_EQ(op1, op2)  {if (compare2(op1, op2, equality))     addLog(this, log2(FILE, "EXPECT_EQ",  #op1, #op2, op1, op2));}
+#define EXPECT_EQ(op1, op2)  {if (!compare2(op1, op2, equality))     addLog(this, log2(FILE, "EXPECT_EQ",  #op1, #op2, op1, op2));}
 #define EXPECT_NE(op1, op2)  {if (!compare2(op1, op2, notEqual))     addLog(this, log2(FILE, "EXPECT_NE",  #op1, #op2, op1, op2));}
 #define EXPECT_GT(op1, op2)  {if (!compare2(op1, op2, greater))      addLog(this, log2(FILE, "EXPECT_GT",  #op1, #op2, op1, op2));}
 #define EXPECT_LT(op1, op2)  {if (!compare2(op1, op2, lesser))       addLog(this, log2(FILE, "EXPECT_LT",  #op1, #op2, op1, op2));}
@@ -55,9 +55,9 @@ namespace gcan {
 #define EXPECT_FLOAT_EPS(op1, op2,  eps) {if (!compare3(op1, op2, eps, floatEqualInEps))    addLog(this, log3(FILE, "EXPECT_FLOAT_EPS",   #op1, #op2, #eps, op1, op2, eps));}
 #define EXPECT_FLOAT_NEPS(op1, op2, eps) {if (!compare3(op1, op2, eps, floatNotEqualInEps)) addLog(this, log3(FILE, "EXPECT_FLOAT_NEPS",  #op1, #op2, #eps, op1, op2, eps));}
 
-#define EXPECT_THROW_EXCEPTION(except, statement)
-#define EXPECT_THROWS(statement)
-#define EXPECT_NO_THROW(statement)
+#define EXPECT_THROW_EXCEPTION(exception, statement) {try {statement addLog(this, logTryCatch(FILE, "EXPECT_THROWS", #statement, "Statement didn't throw"));}catch(exception){}catch(...){addLog(this, logTryCatch(FILE, "EXPECT_THROWS", #statement, "Wrong exception was caught"));}}
+#define EXPECT_THROWS(statement)   {try{{statement} addLog(this, logTryCatch(FILE, "EXPECT_THROWS", #statement, "Statement didn't throw"));} catch(...){}}
+#define EXPECT_NO_THROW(statement) {try{statement} catch(const std::exception& e){addLog(this, logTryCatch(FILE, "EXPECT_NO_THROW", #statement, e.what()));}}
 
 //-------------------------ASSERT CALLS -------------------------------
 
@@ -79,9 +79,9 @@ namespace gcan {
 #define ASSERT_FLOAT_EPS(op1, op2,  eps) {if (!compare3(op1, op2, eps, floatEqualInEps))    addLog(this, log3(FILE, "ASSERT_FLOAT_EPS",   #op1, #op2, #eps, op1, op2, eps)); return;}
 #define ASSERT_FLOAT_NEPS(op1, op2, eps) {if (!compare3(op1, op2, eps, floatNotEqualInEps)) addLog(this, log3(FILE, "ASSERT_FLOAT_NEPS",  #op1, #op2, #eps, op1, op2, eps)); return;}
 
-#define ASSERT_THROW_EXCEPTION(except, statement)
-#define ASSERT_THROWS(statement)
-#define ASSERT_NO_THROW(statement)
+#define ASSERT_THROW_EXCEPTION(exception, statement) {try {statement addLog(this, logTryCatch(FILE, "EXPECT_THROWS", #statement, "Statement didn't throw"));return;}catch(exception){}catch(...){addLog(this, logTryCatch(FILE, "EXPECT_THROWS", #statement, "Wrong exception was caught"));return;}}
+#define ASSERT_THROWS(statement)   {try{{statement} addLog(this, logTryCatch(FILE, "EXPECT_THROWS", #statement, "Statement didn't throw")); return;} catch(...){}}
+#define ASSERT_NO_THROW(statement) {try{statement} catch(const std::exception& e){addLog(this, logTryCatch(FILE, "EXPECT_NO_THROW", #statement, e.what())); return;}}
 
 
 //-------------------------CLASSES-------------------------------

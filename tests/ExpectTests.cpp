@@ -216,19 +216,19 @@ Test(Expect_Throw_Anything)
 {
     EXPECT_THROWS({
         throw(std::runtime_error(""));
-    });
+    })
 
     EXPECT_THROWS({
        throw(std::overflow_error(""));
-    });
+    })
 
     EXPECT_THROWS({
        throw(5);
-    });
+    })
 
     EXPECT_THROWS({
       throw_function();
-    });
+    })
 }
 
 Test(Expect_Throw_Exception)
@@ -250,8 +250,8 @@ Test(Expect_Throw_Exception)
 
 Test(Expect_No_Throwing)
 {
-    EXPECT_NO_THROW({
+    EXPECT_NO_THROW(
         int a = 6;
         int b = 7;
-   });
+   );
 }
