@@ -63,21 +63,21 @@ namespace gcan {
 
 #define CONDITIONAL_ASSERT_END if (!result) {return;}
 
-#define ASSERT_EQ(op1, op2)  {if (!compare2(op1, op2, equality))     addLog(this, log2(FILE, "ASSERT_EQ",  #op1, #op2, op1, op2));}
-#define ASSERT_NE(op1, op2)  {if (!compare2(op1, op2, notEqual))     addLog(this, log2(FILE, "ASSERT_NE",  #op1, #op2, op1, op2));}
-#define ASSERT_GT(op1, op2)  {if (!compare2(op1, op2, greater))      addLog(this, log2(FILE, "ASSERT_GT",  #op1, #op2, op1, op2));}
-#define ASSERT_LT(op1, op2)  {if (!compare2(op1, op2, lesser))       addLog(this, log2(FILE, "ASSERT_LT",  #op1, #op2, op1, op2));}
-#define ASSERT_GTE(op1, op2) {if (!compare2(op1, op2, greaterEqual)) addLog(this, log2(FILE, "ASSERT_GTE", #op1, #op2, op1, op2));}
-#define ASSERT_LTE(op1, op2) {if (!compare2(op1, op2, lesserEqual))  addLog(this, log2(FILE, "ASSERT_LTE", #op1, #op2, op1, op2));}
+#define ASSERT_EQ(op1, op2)  {if (!compare2(op1, op2, equality))     addLog(this, log2(FILE, "ASSERT_EQ",  #op1, #op2, op1, op2)); return;}
+#define ASSERT_NE(op1, op2)  {if (!compare2(op1, op2, notEqual))     addLog(this, log2(FILE, "ASSERT_NE",  #op1, #op2, op1, op2)); return;}
+#define ASSERT_GT(op1, op2)  {if (!compare2(op1, op2, greater))      addLog(this, log2(FILE, "ASSERT_GT",  #op1, #op2, op1, op2)); return;}
+#define ASSERT_LT(op1, op2)  {if (!compare2(op1, op2, lesser))       addLog(this, log2(FILE, "ASSERT_LT",  #op1, #op2, op1, op2)); return;}
+#define ASSERT_GTE(op1, op2) {if (!compare2(op1, op2, greaterEqual)) addLog(this, log2(FILE, "ASSERT_GTE", #op1, #op2, op1, op2)); return;}
+#define ASSERT_LTE(op1, op2) {if (!compare2(op1, op2, lesserEqual))  addLog(this, log2(FILE, "ASSERT_LTE", #op1, #op2, op1, op2)); return;}
 
-#define ASSERT_TRUE(op)  {if (!compare1(op, isTrue))  addLog(this, log1(FILE, "ASSERT_TRUE",   #op, op));}
-#define ASSERT_FALSE(op) {if (!compare1(op, isFalse)) addLog(this, log1(FILE, "ASSERT_FALSE",  #op, op));}
+#define ASSERT_TRUE(op)  {if (!compare1(op, isTrue))  addLog(this, log1(FILE, "ASSERT_TRUE",   #op, op)); return;}
+#define ASSERT_FALSE(op) {if (!compare1(op, isFalse)) addLog(this, log1(FILE, "ASSERT_FALSE",  #op, op)); return;}
 
-#define ASSERT_STRING_EQ(str1, str2) {if (!compare2(str1, str2, cStringEqual))    addLog(this, log2(FILE, "ASSERT_STRING_EQ",      #str1, #str2, str1, str2));}
-#define ASSERT_STRING_NE(str1, str2) {if (!compare2(str1, str2, cStringNotEqual)) addLog(this, log2(FILE, "ASSERT_STRING_NOT_EQ",  #str1, #str2, str1, str2));}
+#define ASSERT_STRING_EQ(str1, str2) {if (!compare2(str1, str2, cStringEqual))    addLog(this, log2(FILE, "ASSERT_STRING_EQ",      #str1, #str2, str1, str2)); return;}
+#define ASSERT_STRING_NE(str1, str2) {if (!compare2(str1, str2, cStringNotEqual)) addLog(this, log2(FILE, "ASSERT_STRING_NOT_EQ",  #str1, #str2, str1, str2)); return;}
 
-#define ASSERT_FLOAT_EPS(op1, op2,  eps) {if (!compare3(op1, op2, eps, floatEqualInEps))    addLog(this, log3(FILE, "ASSERT_FLOAT_EPS",   #op1, #op2, #eps, op1, op2, eps));}
-#define ASSERT_FLOAT_NEPS(op1, op2, eps) {if (!compare3(op1, op2, eps, floatNotEqualInEps)) addLog(this, log3(FILE, "ASSERT_FLOAT_NEPS",  #op1, #op2, #eps, op1, op2, eps));}
+#define ASSERT_FLOAT_EPS(op1, op2,  eps) {if (!compare3(op1, op2, eps, floatEqualInEps))    addLog(this, log3(FILE, "ASSERT_FLOAT_EPS",   #op1, #op2, #eps, op1, op2, eps)); return;}
+#define ASSERT_FLOAT_NEPS(op1, op2, eps) {if (!compare3(op1, op2, eps, floatNotEqualInEps)) addLog(this, log3(FILE, "ASSERT_FLOAT_NEPS",  #op1, #op2, #eps, op1, op2, eps)); return;}
 
 #define ASSERT_THROW_EXCEPTION(except, statement)
 #define ASSERT_THROWS(statement)
