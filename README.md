@@ -4,6 +4,8 @@ Garbage can is my hobby project to learn preprocessor
 meta programming in C++.  
 > It's garbage can not garbage cannot!
 
+![Example](showcase_images/second_example.png?raw=true "Current version")
+
 Current features:
 
 * Test syntax parsing
