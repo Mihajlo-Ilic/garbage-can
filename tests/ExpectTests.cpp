@@ -183,9 +183,10 @@ Test(Expect_Float_Eps)
     double a = 5.5;
     double b = 5.5;
 
-    for (unsigned i = 0; i < 100; i++)
+    for (unsigned i = 1; i < 100; i++)
     {
-        EXPECT_FLOAT_EPS(a, b + pow(10, -i), i);
+        auto eps = 1 / pow(10, i);
+        EXPECT_FLOAT_EPS(a, b + eps, eps);
     }
 }
 
@@ -194,9 +195,10 @@ Test(Expect_Float_Neps)
     double a = 5.5;
     double b = 5.55;
 
-    for (unsigned i = 0; i < 100; i++)
+    for (unsigned i = 1; i < 100; i++)
     {
-        EXPECT_FLOAT_NEPS(a, b + pow(10, -i), i);
+        auto eps = 1 / pow(10, i + 1);
+        EXPECT_FLOAT_NEPS(a, b + eps, eps);
     }
 }
 

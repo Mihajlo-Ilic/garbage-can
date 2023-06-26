@@ -2,13 +2,11 @@
 #define GARBAGE_CAN_UNIT_TESTER_HPP
 
 #include <vector>
-#include <string>
-#include <iostream>
 
 #include <exception>
 
-#include <cstring>
-#include <cmath>
+#include "comparer.hpp"
+#include "writer.hpp"
 
 #define GARBAGE_TESTER_MAIN \
 int main() \
@@ -39,82 +37,60 @@ namespace gcan {
 
 //-------------------------EXPECT CALLS -------------------------------
 
-#define EXPECT_EQ(op1, op2) result &= (op1) == (op2); gcan::Outputer::logOperator(__FILE__,__LINE__,#op1,#op2,"=",!((op1) == (op2)))
-#define EXPECT_NE(op1, op2) result &= (op1) != (op2); gcan::Outputer::logOperator(__FILE__,__LINE__,#op1,#op2,"!=",!((op1) != (op2)))
-#define EXPECT_GT(op1, op2) result &= (op1) > (op2); gcan::Outputer::logOperator(__FILE__,__LINE__,#op1,#op2,">",!((op1) > (op2)))
-#define EXPECT_LT(op1, op2) result &= (op1) < (op2); gcan::Outputer::logOperator(__FILE__,__LINE__,#op1,#op2,"<",!((op1) < (op2)))
-#define EXPECT_GTE(op1, op2) result &= (op1) >= (op2); gcan::Outputer::logOperator(__FILE__,__LINE__,#op1,#op2,"<=",!((op1) >= (op2)))
-#define EXPECT_LTE(op1, op2) result &= (op1) <= (op2); gcan::Outputer::logOperator(__FILE__,__LINE__,#op1,#op2,"<=",!((op1) <= (op2)))
+#define FILE __FILE__,__LINE__
 
-#define EXPECT_TRUE(op) EXPECT_EQ(op, true)
-#define EXPECT_FALSE(op) EXPECT_EQ(op, false)
+#define EXPECT_EQ(op1, op2)  {if (!compare2(op1, op2, equality))     addLog(this, log2(FILE, "EXPECT_EQ",  #op1, #op2, op1, op2));}
+#define EXPECT_NE(op1, op2)  {if (!compare2(op1, op2, notEqual))     addLog(this, log2(FILE, "EXPECT_NE",  #op1, #op2, op1, op2));}
+#define EXPECT_GT(op1, op2)  {if (!compare2(op1, op2, greater))      addLog(this, log2(FILE, "EXPECT_GT",  #op1, #op2, op1, op2));}
+#define EXPECT_LT(op1, op2)  {if (!compare2(op1, op2, lesser))       addLog(this, log2(FILE, "EXPECT_LT",  #op1, #op2, op1, op2));}
+#define EXPECT_GTE(op1, op2) {if (!compare2(op1, op2, greaterEqual)) addLog(this, log2(FILE, "EXPECT_GTE", #op1, #op2, op1, op2));}
+#define EXPECT_LTE(op1, op2) {if (!compare2(op1, op2, lesserEqual))  addLog(this, log2(FILE, "EXPECT_LTE", #op1, #op2, op1, op2));}
 
-#define EXPECT_STRING_EQ(str1, str2) result &= (strcmp(str1, str2) == 0)
-#define EXPECT_STRING_NE(str1, str2) result &= (strcmp(str1, str2) != 0)
+#define EXPECT_TRUE(op)  {if (!compare1(op, isTrue))  addLog(this, log1(FILE, "EXPECT_TRUE",   #op, op));}
+#define EXPECT_FALSE(op) {if (!compare1(op, isFalse)) addLog(this, log1(FILE, "EXPECT_FALSE",  #op, op));}
 
-#define EXPECT_FLOAT_EPS(float1, float2, eps) result &= (fabs((a)-(b)) <= eps)
-#define EXPECT_FLOAT_NEPS(float1, float2, eps) result &= (fabs((a)-(b)) >= eps); gcan::Outputer::logOperator(__FILE__,__LINE__, std::to_string(fabs((a)-(b))),std::to_string(eps),">=",(fabs((a)-(b)) >= eps))
+#define EXPECT_STRING_EQ(str1, str2) {if (!compare2(str1, str2, cStringEqual))    addLog(this, log2(FILE, "EXPECT_STRING_EQ",      #str1, #str2, str1, str2));}
+#define EXPECT_STRING_NE(str1, str2) {if (!compare2(str1, str2, cStringNotEqual)) addLog(this, log2(FILE, "EXPECT_STRING_NOT_EQ",  #str1, #str2, str1, str2));}
 
-#define EXPECT_THROW_EXCEPTION(except, statement) result =false; try statement catch(const std::exception& e) {result = (typeid(e) == typeid(except));}
-#define EXPECT_THROWS(statement) result =false; try statement catch(...) {result = true;}
-#define EXPECT_NO_THROW(statement) try statement catch(...) {result = false;}
+#define EXPECT_FLOAT_EPS(op1, op2,  eps) {if (!compare3(op1, op2, eps, floatEqualInEps))    addLog(this, log3(FILE, "EXPECT_FLOAT_EPS",   #op1, #op2, #eps, op1, op2, eps));}
+#define EXPECT_FLOAT_NEPS(op1, op2, eps) {if (!compare3(op1, op2, eps, floatNotEqualInEps)) addLog(this, log3(FILE, "EXPECT_FLOAT_NEPS",  #op1, #op2, #eps, op1, op2, eps));}
+
+#define EXPECT_THROW_EXCEPTION(except, statement)
+#define EXPECT_THROWS(statement)
+#define EXPECT_NO_THROW(statement)
 
 //-------------------------ASSERT CALLS -------------------------------
 
 #define CONDITIONAL_ASSERT_END if (!result) {return;}
 
-#define ASSERT_EQ(op1, op2) result &= (op1) == (op2); CONDITIONAL_ASSERT_END
-#define ASSERT_NE(op1, op2) result &= (op1) != (op2);CONDITIONAL_ASSERT_END
-#define ASSERT_GT(op1, op2) result &= (op1) > (op2);CONDITIONAL_ASSERT_END
-#define ASSERT_LT(op1, op2) result &= (op1) < (op2);CONDITIONAL_ASSERT_END
-#define ASSERT_GTE(op1, op2) result &= (op1) >= (op2);CONDITIONAL_ASSERT_END
-#define ASSERT_LTE(op1, op2) result &= (op1) <= (op2);CONDITIONAL_ASSERT_END
+#define ASSERT_EQ(op1, op2)  {if (!compare2(op1, op2, equality))     addLog(this, log2(FILE, "ASSERT_EQ",  #op1, #op2, op1, op2));}
+#define ASSERT_NE(op1, op2)  {if (!compare2(op1, op2, notEqual))     addLog(this, log2(FILE, "ASSERT_NE",  #op1, #op2, op1, op2));}
+#define ASSERT_GT(op1, op2)  {if (!compare2(op1, op2, greater))      addLog(this, log2(FILE, "ASSERT_GT",  #op1, #op2, op1, op2));}
+#define ASSERT_LT(op1, op2)  {if (!compare2(op1, op2, lesser))       addLog(this, log2(FILE, "ASSERT_LT",  #op1, #op2, op1, op2));}
+#define ASSERT_GTE(op1, op2) {if (!compare2(op1, op2, greaterEqual)) addLog(this, log2(FILE, "ASSERT_GTE", #op1, #op2, op1, op2));}
+#define ASSERT_LTE(op1, op2) {if (!compare2(op1, op2, lesserEqual))  addLog(this, log2(FILE, "ASSERT_LTE", #op1, #op2, op1, op2));}
 
-#define ASSERT_TRUE(op) ASSERT_EQ(op, true) CONDITIONAL_ASSERT_END
-#define ASSERT_FALSE(op) ASSERT_EQ(op, false) CONDITIONAL_ASSERT_END
+#define ASSERT_TRUE(op)  {if (!compare1(op, isTrue))  addLog(this, log1(FILE, "ASSERT_TRUE",   #op, op));}
+#define ASSERT_FALSE(op) {if (!compare1(op, isFalse)) addLog(this, log1(FILE, "ASSERT_FALSE",  #op, op));}
 
-#define ASSERT_STRING_EQ(str1, str2) result &= (strcmp(str1, str2) == 0); CONDITIONAL_ASSERT_END
-#define ASSERT_STRING_NE(str1, str2) result &= (strcmp(str1, str2) != 0); CONDITIONAL_ASSERT_END
+#define ASSERT_STRING_EQ(str1, str2) {if (!compare2(str1, str2, cStringEqual))    addLog(this, log2(FILE, "ASSERT_STRING_EQ",      #str1, #str2, str1, str2));}
+#define ASSERT_STRING_NE(str1, str2) {if (!compare2(str1, str2, cStringNotEqual)) addLog(this, log2(FILE, "ASSERT_STRING_NOT_EQ",  #str1, #str2, str1, str2));}
 
-#define ASSERT_FLOAT_EPS(float1, float2, eps) result &= (fabs((a)-(b)) <= eps); CONDITIONAL_ASSERT_END
-#define ASSERT_FLOAT_NEPS(float1, float2, eps) result &= (fabs((a)-(b)) >= eps); CONDITIONAL_ASSERT_END
+#define ASSERT_FLOAT_EPS(op1, op2,  eps) {if (!compare3(op1, op2, eps, floatEqualInEps))    addLog(this, log3(FILE, "ASSERT_FLOAT_EPS",   #op1, #op2, #eps, op1, op2, eps));}
+#define ASSERT_FLOAT_NEPS(op1, op2, eps) {if (!compare3(op1, op2, eps, floatNotEqualInEps)) addLog(this, log3(FILE, "ASSERT_FLOAT_NEPS",  #op1, #op2, #eps, op1, op2, eps));}
 
-#define ASSERT_THROW_EXCEPTION(except, statement) result =false; try statement catch(const std::exception& e) {result = (typeid(e) == typeid(except));} CONDITIONAL_ASSERT_END
-#define ASSERT_THROWS(statement) result =false; try statement catch(...) {result = true;} CONDITIONAL_ASSERT_END
-#define ASSERT_NO_THROW(statement) try statement catch(...) {result = false;} CONDITIONAL_ASSERT_END
+#define ASSERT_THROW_EXCEPTION(except, statement)
+#define ASSERT_THROWS(statement)
+#define ASSERT_NO_THROW(statement)
 
 
 //-------------------------CLASSES-------------------------------
 
-
-    class Outputer {
-    public:
-
-        static void logOperator(const std::string &file, int line, const std::string &op1, const std::string &op2,
-                                const std::string &operation, bool failed) {
-            static std::vector<std::string> _logs;
-
-            if (failed) {
-                _logs.push_back("File: " + file + ":" + std::to_string(line) + " " + op1 + " " + operation + " " + op2 +
-                                " FAILED");
-                std::cout << _logs.at(_logs.size() - 1) << std::endl;
-            }
-
-        }
-
-        static void logTest(const std::string &testName, bool passed) {
-            static std::vector<std::string> _logs;
-
-            _logs.push_back("-- " + testName + (!passed ? " FAILED" : " PASSED"));
-            std::cout << _logs.at(_logs.size() - 1) << std::endl;
-
-        }
-
-    };
+    class TestCollector;
 
     class TestMeta {
     public:
-        explicit TestMeta(const std::string &name) : _name(name) {};
+        explicit TestMeta(std::string name) : _name(std::move(name)) {};
 
         TestMeta(const TestMeta &) = delete;
 
@@ -141,8 +117,15 @@ namespace gcan {
         bool result = true;
 
     private:
+        friend void addLog(TestMeta *me, std::stringstream&& ss)
+        {
+            me->logs.push_back(ss.str());
+        }
 
         std::string _name;
+        std::vector<std::string> logs;
+
+        friend class TestCollector;
     };
 
     class TestCollector {
@@ -162,7 +145,13 @@ namespace gcan {
         static void run() {
             for (const auto &test: TestCollector::testRegistry()) {
                 test->testBody();
-                Outputer::logTest(test->getName(), test->getResult());
+
+                std::cout << "-- " << test->_name << (test ->logs.empty() ? " PASSED" : " FAILED") << std::endl;
+                for (const auto& it : test->logs)
+                {
+                    std::cout << it << std::endl;
+                }
+
             }
         }
 
